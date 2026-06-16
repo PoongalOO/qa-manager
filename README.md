@@ -1,59 +1,168 @@
-# QaManager
+# QA Manager
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+QA Manager est une application web Angular destinée au pilotage des activités de test logiciel. Elle permet d'organiser des projets QA, de structurer les cas de test par dossiers, de préparer des campagnes d'exécution et de suivre les résultats au fil de l'eau.
 
-## Development server
+L'application est conçue comme un front-end Angular consommant une API REST exposée sous le préfixe `/api`. En développement, le proxy Angular redirige ces appels vers un back-end local disponible sur `http://localhost:8000`.
 
-To start a local development server, run:
+## Fonctionnalités principales
 
-```bash
-ng serve
+- **Authentification utilisateur**
+  - Inscription et connexion.
+  - Stockage local du jeton d'accès.
+  - Protection des routes via guards Angular.
+
+- **Gestion des rôles et permissions**
+  - Rôles globaux : administrateur, utilisateur, QA manager.
+  - Rôles par projet : manager, développeur, reporter.
+  - Restrictions d'accès sur l'administration, les membres, les campagnes et les actions d'édition.
+
+- **Gestion des projets**
+  - Liste des projets accessibles.
+  - Création, modification et paramétrage des projets.
+  - Tableau de bord projet avec statistiques.
+  - Gestion des membres du projet.
+
+- **Organisation des cas de test**
+  - Classement des cas de test dans des dossiers.
+  - Création et édition de cas de test.
+  - Gestion des priorités, types, états et statuts d'automatisation.
+  - Support des cas au format texte ou étapes détaillées.
+  - Association de tags et de pièces jointes.
+  - Protection contre la perte de modifications non enregistrées.
+
+- **Campagnes d'exécution**
+  - Création et suivi des runs de test.
+  - Association de cas de test à une campagne.
+  - Suivi des statuts : non testé, passé, échoué, à retester, ignoré.
+  - Historique des résultats par utilisateur.
+  - Commentaires et indicateurs d'avancement.
+
+- **Administration et compte utilisateur**
+  - Espace d'administration réservé aux administrateurs.
+  - Page de compte et paramètres utilisateur.
+  - Gestion de la langue de l'interface.
+
+- **Internationalisation**
+  - Ressources de traduction en français et en anglais via `@ngx-translate`.
+
+## Stack technique
+
+- Angular 19
+- Angular Material / CDK
+- RxJS
+- TypeScript
+- `@ngx-translate` pour l'internationalisation
+- Karma / Jasmine pour les tests unitaires
+
+## Structure du projet
+
+```text
+src/app/
+├── core/
+│   ├── guards/          # Guards d'authentification, d'administration et d'édition
+│   ├── interceptors/    # Intercepteur HTTP d'authentification
+│   ├── models/          # Modèles TypeScript métier
+│   └── services/        # Services REST et état applicatif
+├── features/
+│   ├── account/         # Compte et paramètres utilisateur
+│   ├── admin/           # Administration
+│   ├── auth/            # Connexion et inscription
+│   ├── folders/         # Dossiers et cas de test
+│   ├── health/          # Vérification de disponibilité
+│   ├── projects/        # Projets, membres, paramètres et tableau de bord
+│   └── runs/            # Campagnes d'exécution
+└── shared/
+    └── components/      # Composants réutilisables
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Prérequis
 
-## Code scaffolding
+- Node.js compatible avec Angular 19.
+- npm.
+- Une API QA Manager lancée localement sur `http://localhost:8000` pour utiliser l'application en développement.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Installation
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Installer les dépendances :
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
+## Lancement en développement
 
-To build the project run:
+Démarrer le serveur Angular :
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Puis ouvrir :
 
-## Running unit tests
+```text
+http://localhost:4200/
+```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Les appels `/api` sont proxifiés vers `http://localhost:8000` via `proxy.conf.json`.
+
+## Build
+
+Construire l'application :
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+Les artefacts sont générés dans le dossier `dist/`.
 
-For end-to-end (e2e) testing, run:
+## Tests unitaires
+
+Lancer les tests unitaires :
 
 ```bash
-ng e2e
+npm test
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Les tests utilisent Karma et Jasmine.
 
-## Additional Resources
+## Configuration API
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+L'URL de l'API est définie dans les fichiers d'environnement :
+
+```ts
+apiUrl: '/api'
+```
+
+En développement, la cible réelle est configurée dans `proxy.conf.json` :
+
+```json
+{
+  "/api": {
+    "target": "http://localhost:8000",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+```
+
+## Routes principales
+
+- `/auth/signin` : connexion.
+- `/auth/signup` : inscription.
+- `/account` : compte utilisateur.
+- `/account/settings` : paramètres utilisateur.
+- `/projects` : liste des projets.
+- `/projects/:projectId/home` : tableau de bord projet.
+- `/projects/:projectId/folders` : dossiers et cas de test.
+- `/projects/:projectId/runs` : campagnes d'exécution.
+- `/projects/:projectId/members` : membres du projet.
+- `/projects/:projectId/settings` : paramètres du projet.
+- `/admin` : administration.
+- `/health` : vérification de santé.
+
+## Notes de développement
+
+- Les composants de pages sont chargés en lazy loading via le routeur Angular.
+- Les accès sont centralisés dans `AuthService` et les guards du dossier `core/guards`.
+- Les données métier sont typées dans `core/models`.
+- Les traductions sont stockées dans `src/assets/i18n/fr.json` et `src/assets/i18n/en.json`.
