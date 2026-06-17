@@ -412,8 +412,8 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
                           <mat-spinner diameter="16" />
                         } @else {
                           <mat-icon>send</mat-icon>
-                          {{ 'Run.send' | translate }}
                         }
+                        <span>{{ 'Run.send' | translate }}</span>
                       </button>
                     </div>
                   </div>
