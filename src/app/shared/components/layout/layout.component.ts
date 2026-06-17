@@ -106,6 +106,7 @@ import { LanguageService, SUPPORTED_LANGS } from '../../../core/services/languag
     .user-info small { color: #888; font-size: 12px; }
     mat-nav-list a { color: #cdd6f4; }
     mat-nav-list mat-icon { color: #89b4fa; }
+    mat-nav-list .mdc-list-item__primary-text { color: #cdd6f4; }
   `],
 })
 export class LayoutComponent {
