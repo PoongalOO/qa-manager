@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { signupEnabledGuard } from './core/guards/signup-enabled.guard';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { LayoutComponent } from './shared/components/layout/layout.component';
 
@@ -19,6 +20,7 @@ export const routes: Routes = [
       },
       {
         path: 'signup',
+        canActivate: [signupEnabledGuard],
         loadComponent: () =>
           import('./features/auth/signup/signup.component').then(m => m.SignupComponent),
       },

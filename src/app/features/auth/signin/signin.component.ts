@@ -10,6 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
+import { SIGNUP_ENABLED } from '../../../core/config/feature-flags';
 
 @Component({
   selector: 'app-signin',
@@ -54,11 +55,13 @@ import { AuthService } from '../../../core/services/auth.service';
           </form>
         </mat-card-content>
 
-        <mat-card-actions>
-          <span class="auth-link">{{ 'Auth.or_signup' | translate }}
-            <a routerLink="/auth/signup">{{ 'Auth.signup' | translate }}</a>
-          </span>
-        </mat-card-actions>
+        @if (signupEnabled) {
+          <mat-card-actions>
+            <span class="auth-link">{{ 'Auth.or_signup' | translate }}
+              <a routerLink="/auth/signup">{{ 'Auth.signup' | translate }}</a>
+            </span>
+          </mat-card-actions>
+        }
       </mat-card>
     </div>
   `,
@@ -70,6 +73,8 @@ import { AuthService } from '../../../core/services/auth.service';
   `],
 })
 export class SigninComponent {
+  readonly signupEnabled = SIGNUP_ENABLED;
+
   form: FormGroup;
   loading = false;
 
