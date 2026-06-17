@@ -108,7 +108,8 @@
     "user": "User",
     "qa_manager": "QA Manager",
     "create_account": "Create account",
-    "reset_password": "Reset password"
+    "reset_password": "Reset password",
+    "delete_account": "Delete account"
   },
   "Projects": {
     "project_list": "Projects",

@@ -15,6 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
 import { CreateUserDialogComponent, CreateUserResult } from '../../shared/components/create-user-dialog/create-user-dialog.component';
 import { PasswordResetDialogComponent, PasswordResetDialogData, PasswordResetResult } from '../../shared/components/password-reset-dialog/password-reset-dialog.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 const ROLE_LABELS = ['Administrateur', 'Utilisateur', 'QA Manager'];
 
@@ -76,6 +77,10 @@ const ROLE_LABELS = ['Administrateur', 'Utilisateur', 'QA Manager'];
                   <button mat-icon-button (click)="openResetDialog(u)"
                     [title]="'Admin.reset_password' | translate">
                     <mat-icon>lock_reset</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="openDeleteDialog(u)"
+                    [title]="'Admin.delete_account' | translate">
+                    <mat-icon>delete</mat-icon>
                   </button>
                 }
               </td>
@@ -151,6 +156,27 @@ export class AdminComponent implements OnInit, AfterViewInit {
       this.adminSvc.adminResetPassword(user.id, result.newPassword).subscribe({
         next: () => { this.snackBar.open('Mot de passe réinitialisé', 'OK', { duration: 3000 }); },
         error: () => { this.snackBar.open('Erreur lors de la réinitialisation', 'OK', { duration: 4000 }); },
+      });
+    });
+  }
+
+  openDeleteDialog(user: User): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: `Supprimer le compte de ${user.username} ?` },
+    });
+    ref.afterClosed().subscribe((confirmed: boolean | undefined) => {
+      if (!confirmed) return;
+      this.adminSvc.deleteUser(user.id).subscribe({
+        next: () => {
+          this.dataSource.data = this.dataSource.data.filter(u => u.id !== user.id);
+          this.snackBar.open('Compte supprimé', 'OK', { duration: 3000 });
+        },
+        error: (err) => {
+          const message = err?.status === 409
+            ? 'Erreur : au moins un administrateur requis'
+            : 'Erreur lors de la suppression du compte';
+          this.snackBar.open(message, 'OK', { duration: 4000 });
+        },
       });
     });
   }

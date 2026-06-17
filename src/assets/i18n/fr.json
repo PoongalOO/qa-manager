@@ -108,7 +108,8 @@
     "user": "Utilisateur",
     "qa_manager": "QA Manager",
     "create_account": "Créer un compte",
-    "reset_password": "Réinitialiser le mot de passe"
+    "reset_password": "Réinitialiser le mot de passe",
+    "delete_account": "Supprimer le compte"
   },
   "Projects": {
     "project_list": "Projets",

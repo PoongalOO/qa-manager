@@ -24,4 +24,8 @@ export class AdminService {
   adminResetPassword(userId: number, newPassword: string): Observable<{ user: { id: number } }> {
     return this.http.put<{ user: { id: number } }>(`${this.api}/users/${userId}/password`, { newPassword });
   }
+
+  deleteUser(userId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.api}/users/${userId}`);
+  }
 }
