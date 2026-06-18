@@ -14,6 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
     ...provideTranslateService({ fallbackLang: 'fr' }),
-    ...provideTranslateHttpLoader({ prefix: '/assets/i18n/', suffix: '.json' }),
+    ...provideTranslateHttpLoader({ prefix: 'assets/i18n/', suffix: '.json' }),
   ],
 };
