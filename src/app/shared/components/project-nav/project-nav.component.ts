@@ -35,10 +35,12 @@ import { AuthService } from '../../../core/services/auth.service';
   `,
   styles: [`
     .project-nav {
-      display: flex; gap: 2px; margin-bottom: 16px;
-      border-bottom: 1px solid rgba(0,0,0,.12); padding-bottom: 4px; flex-wrap: wrap;
+      display: flex; gap: 4px; margin-bottom: 20px;
+      border-bottom: 1px solid var(--border); padding-bottom: 4px; flex-wrap: wrap;
     }
-    .active-nav { color: #7c4dff !important; background: rgba(124,77,255,.08) !important; border-radius: 4px; }
+    .project-nav a { color: var(--text-secondary); transition: color var(--transition-fast), background var(--transition-fast); border-radius: var(--radius-sm); }
+    .project-nav a:hover { color: var(--text-primary); background: var(--surface-muted); }
+    .active-nav { color: var(--brand-green-dark) !important; background: var(--brand-green-light) !important; }
   `],
 })
 export class ProjectNavComponent {

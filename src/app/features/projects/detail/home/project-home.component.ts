@@ -1,9 +1,6 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDividerModule } from '@angular/material/divider';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
 import { ProjectNavComponent } from '../../../../shared/components/project-nav/project-nav.component';
@@ -19,12 +16,11 @@ const TYPE_COLORS = Array.from({ length: 13 }, (_, i) => CATEGORICAL_PALETTE[i %
   selector: 'app-project-home',
   standalone: true,
   imports: [
-    MatCardModule, MatChipsModule, MatIconModule,
-    MatProgressSpinnerModule, MatDividerModule,
+    MatIconModule, MatProgressSpinnerModule,
     ProjectNavComponent, DonutChartComponent, TranslatePipe,
   ],
   template: `
-    <div class="page-container">
+    <div class="page-container anim-page">
       <app-project-nav [projectId]="projectId" />
 
       @if (loading) {
@@ -33,40 +29,49 @@ const TYPE_COLORS = Array.from({ length: 13 }, (_, i) => CATEGORICAL_PALETTE[i %
         <h1 class="project-title">{{ project.name }}</h1>
 
         <div class="stats-row">
-          <mat-chip>
-            <mat-icon>folder</mat-icon>
-            {{ folderCount }} {{ 'Home.folders' | translate }}
-          </mat-chip>
-          <mat-chip>
-            <mat-icon>assignment</mat-icon>
-            {{ caseCount }} {{ 'Home.test_cases' | translate }}
-          </mat-chip>
-          <mat-chip>
-            <mat-icon>science</mat-icon>
-            {{ runCount }} {{ 'Home.test_runs' | translate }}
-          </mat-chip>
+          <div class="stat-card card-surface anim-stagger" style="animation-delay:0ms">
+            <div class="stat-icon stat-icon--folder"><mat-icon>folder</mat-icon></div>
+            <div class="stat-body">
+              <div class="stat-value">{{ folderCount }}</div>
+              <div class="stat-label">{{ 'Home.folders' | translate }}</div>
+            </div>
+          </div>
+          <div class="stat-card card-surface anim-stagger" style="animation-delay:80ms">
+            <div class="stat-icon stat-icon--case"><mat-icon>assignment</mat-icon></div>
+            <div class="stat-body">
+              <div class="stat-value">{{ caseCount }}</div>
+              <div class="stat-label">{{ 'Home.test_cases' | translate }}</div>
+            </div>
+          </div>
+          <div class="stat-card card-surface anim-stagger" style="animation-delay:160ms">
+            <div class="stat-icon stat-icon--run"><mat-icon>science</mat-icon></div>
+            <div class="stat-body">
+              <div class="stat-value">{{ runCount }}</div>
+              <div class="stat-label">{{ 'Home.test_runs' | translate }}</div>
+            </div>
+          </div>
         </div>
 
         @if (project.detail) {
-          <mat-card class="detail-card">
-            <mat-card-content>{{ project.detail }}</mat-card-content>
-          </mat-card>
+          <div class="detail-card card-surface">{{ project.detail }}</div>
         }
 
         @if (caseCount > 0) {
-          <mat-divider class="divider" />
           <h3 class="section-title">{{ 'Home.test_classification' | translate }}</h3>
           <div class="charts-row">
-            <app-donut-chart [segments]="priorityData" [title]="'Home.by_priority' | translate" />
-            <app-donut-chart [segments]="typeData" [title]="'Home.by_type' | translate" />
+            <div class="chart-card card-surface">
+              <app-donut-chart [segments]="priorityData" [title]="'Home.by_priority' | translate" />
+            </div>
+            <div class="chart-card card-surface">
+              <app-donut-chart [segments]="typeData" [title]="'Home.by_type' | translate" />
+            </div>
           </div>
         }
 
         @if (runCount > 0) {
-          <mat-divider class="divider" />
           <h3 class="section-title">{{ 'Home.progress' | translate }}</h3>
-          @for (run of runProgressData; track run.name) {
-            <div class="run-block">
+          @for (run of runProgressData; track run.name; let i = $index) {
+            <div class="run-block card-surface anim-stagger" [style.animation-delay.ms]="i * 70">
               <div class="run-header">
                 <span class="run-name">{{ run.name }}</span>
                 <span class="run-case-count">{{ run.total }} {{ 'Home.test_cases' | translate }}</span>
@@ -102,20 +107,39 @@ const TYPE_COLORS = Array.from({ length: 13 }, (_, i) => CATEGORICAL_PALETTE[i %
   `,
   styles: [`
     .page-container { padding: 16px; }
-    .project-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; }
-    .stats-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .stats-row mat-chip { display: flex; align-items: center; gap: 4px; }
-    .detail-card { background: #f5f5f5; margin-bottom: 16px; }
-    .divider { margin: 24px 0; }
-    .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
-    .charts-row { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 8px; }
-    .run-block { margin-bottom: 16px; }
-    .run-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .run-name { font-weight: 500; }
-    .run-case-count { color: #888; font-size: 0.9rem; }
-    .progress-bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; background: #eee; }
-    .progress-segment { height: 100%; transition: width 0.3s; }
-    .progress-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; font-size: 0.8rem; }
+    .project-title { font-size: 1.7rem; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.01em; }
+    .stats-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 22px;
+      min-width: 180px;
+    }
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stat-icon--folder { background: #e8edf3; color: var(--brand-navy); }
+    .stat-icon--case { background: var(--brand-green-light); color: var(--brand-green-dark); }
+    .stat-icon--run { background: #fdf1e3; color: #b9650f; }
+    .stat-value { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+    .stat-label { color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px; }
+    .detail-card { padding: 16px 20px; margin-bottom: 24px; color: var(--text-secondary); }
+    .section-title { font-size: 1.1rem; font-weight: 600; margin: 28px 0 16px; }
+    .charts-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
+    .chart-card { padding: 20px; }
+    .run-block { padding: 16px 20px; margin-bottom: 14px; }
+    .run-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .run-name { font-weight: 600; }
+    .run-case-count { color: var(--text-secondary); font-size: 0.9rem; }
+    .progress-bar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--surface-muted); }
+    .progress-segment { height: 100%; transition: width var(--transition-base); }
+    .progress-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; font-size: 0.8rem; }
     .pl-item { display: flex; align-items: center; gap: 4px; }
     .pl-dot { width: 8px; height: 8px; border-radius: 50%; }
   `],

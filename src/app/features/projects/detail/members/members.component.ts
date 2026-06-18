@@ -30,13 +30,13 @@ const ROLE_LABELS = ['Manager', 'Développeur', 'Reporter'];
     ProjectNavComponent, UserAvatarComponent, TranslatePipe,
   ],
   template: `
-    <div class="page-container">
+    <div class="page-container anim-page">
       <app-project-nav [projectId]="projectId" />
 
       <div class="page-header">
         <h2 class="page-title">{{ 'Members.member_management' | translate }}</h2>
         @if (canManage) {
-          <button mat-flat-button (click)="openAddDialog()">
+          <button mat-flat-button color="primary" (click)="openAddDialog()">
             <mat-icon>person_add</mat-icon> {{ 'Members.add_member' | translate }}
           </button>
         }
@@ -45,7 +45,7 @@ const ROLE_LABELS = ['Manager', 'Développeur', 'Reporter'];
       @if (loading) {
         <mat-spinner diameter="40" />
       } @else {
-        <table mat-table [dataSource]="members" class="members-table">
+        <table mat-table [dataSource]="members" class="members-table card-surface">
           <ng-container matColumnDef="user">
             <th mat-header-cell *matHeaderCellDef>{{ 'Members.username' | translate }}</th>
             <td mat-cell *matCellDef="let m">
@@ -96,14 +96,16 @@ const ROLE_LABELS = ['Manager', 'Développeur', 'Reporter'];
   `,
   styles: [`
     .page-container { padding: 16px; }
-    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .page-title { font-size: 1.3rem; font-weight: 600; margin: 0; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .page-title { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
     .members-table { width: 100%; }
+    .members-table tr.mat-mdc-row:hover { background: var(--surface-muted); }
     .user-cell { display: flex; align-items: center; gap: 10px; }
     .user-info { display: flex; flex-direction: column; }
-    .email { font-size: 0.8rem; color: #666; }
+    .username { font-weight: 600; }
+    .email { font-size: 0.8rem; color: var(--text-secondary); }
     .role-select { min-width: 130px; }
-    .empty { color: #888; text-align: center; padding: 24px; }
+    .empty { color: var(--text-secondary); text-align: center; padding: 24px; }
   `],
 })
 export class MembersComponent implements OnInit {

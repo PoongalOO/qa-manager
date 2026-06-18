@@ -3,8 +3,12 @@
 $theme: mat.define-theme((
   color: (
     theme-type: light,
-    primary: mat.$violet-palette,
+    primary: mat.$green-palette,
     tertiary: mat.$azure-palette,
+  ),
+  typography: (
+    brand-family: 'Inter, sans-serif',
+    plain-family: 'Inter, sans-serif',
   ),
   density: (scale: 0),
 ));
@@ -15,16 +19,76 @@ html {
 
 *, *::before, *::after { box-sizing: border-box; }
 
+:root {
+  --brand-navy: #1b2d40;
+  --brand-navy-light: #2d4259;
+  --brand-green: #23a54a;
+  --brand-green-dark: #1a7d38;
+  --brand-green-light: #e6f6eb;
+
+  --surface: #ffffff;
+  --surface-muted: #f6f7f9;
+  --border: #e4e7ec;
+  --text-primary: #1b2d40;
+  --text-secondary: #64748a;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 1px rgba(16, 24, 40, .04);
+  --shadow-md: 0 4px 16px rgba(16, 24, 40, .08);
+  --shadow-lg: 0 16px 40px rgba(16, 24, 40, .14);
+
+  --transition-fast: 150ms ease;
+  --transition-base: 280ms cubic-bezier(.4, 0, .2, 1);
+}
+
 html, body {
   height: 100%;
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
-  background: #f5f5f5;
+  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--text-primary);
+  background: var(--surface-muted);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .page-container { margin: 0 auto; }
 .spacer { flex: 1; }
 .full-width { width: 100%; }
 
-.chip-public  { background: #e8f5e9 !important; color: #2e7d32 !important; }
+.chip-public  { background: var(--brand-green-light) !important; color: var(--brand-green-dark) !important; }
 .chip-private { background: #fce4ec !important; color: #c62828 !important; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.anim-page {
+  animation: fadeInUp 420ms cubic-bezier(.4, 0, .2, 1) both;
+}
+
+.anim-stagger {
+  opacity: 0;
+  animation: fadeInUp 420ms cubic-bezier(.4, 0, .2, 1) forwards;
+}
+
+.card-surface {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card-surface:hover {
+  box-shadow: var(--shadow-md);
+}

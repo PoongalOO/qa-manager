@@ -4,7 +4,6 @@ import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -24,12 +23,12 @@ const ROLE_LABELS = ['Administrateur', 'Utilisateur', 'QA Manager'];
   standalone: true,
   imports: [
     CommonModule, MatTableModule, MatSortModule, MatButtonModule,
-    MatIconModule, MatCardModule, MatSelectModule,
+    MatIconModule, MatSelectModule,
     MatProgressSpinnerModule, MatSnackBarModule, MatDialogModule,
     TranslatePipe,
   ],
   template: `
-    <div class="admin-container">
+    <div class="admin-container anim-page">
       <div class="header-row">
         <h2>{{ 'Admin.user_management' | translate }}</h2>
         <button mat-flat-button color="primary" (click)="openCreateDialog()">
@@ -41,7 +40,7 @@ const ROLE_LABELS = ['Administrateur', 'Utilisateur', 'QA Manager'];
       @if (loading) {
         <mat-spinner diameter="40" />
       } @else {
-        <mat-card>
+        <div class="card-surface">
           <table mat-table [dataSource]="dataSource" matSort class="users-table">
             <ng-container matColumnDef="id">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'Admin.id' | translate }}</th>
@@ -89,15 +88,16 @@ const ROLE_LABELS = ['Administrateur', 'Utilisateur', 'QA Manager'];
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
-        </mat-card>
+        </div>
       }
     </div>
   `,
   styles: [`
     .admin-container { padding: 24px; }
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    h2 { margin: 0; font-size: 20px; font-weight: 600; }
+    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    h2 { margin: 0; font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; }
     .users-table { width: 100%; }
+    .users-table tr.mat-mdc-row:hover { background: var(--surface-muted); }
     .role-select { min-width: 140px; }
   `],
 })

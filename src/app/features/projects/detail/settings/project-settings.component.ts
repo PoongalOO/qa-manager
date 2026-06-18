@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -28,12 +27,12 @@ import { User } from '../../../../core/models/user.model';
   selector: 'app-project-settings',
   standalone: true,
   imports: [
-    FormsModule, MatCardModule, MatButtonModule, MatIconModule, MatTableModule,
+    FormsModule, MatButtonModule, MatIconModule, MatTableModule,
     MatChipsModule, MatInputModule, MatFormFieldModule, MatProgressSpinnerModule,
     ProjectNavComponent, UserAvatarComponent, TranslatePipe,
   ],
   template: `
-    <div class="page-container">
+    <div class="page-container anim-page">
       <app-project-nav [projectId]="projectId" />
 
       @if (loading) {
@@ -47,14 +46,13 @@ import { User } from '../../../../core/models/user.model';
               (click)="onDeleteProject()">
               <mat-icon>delete</mat-icon> {{ 'Settings.delete' | translate }}
             </button>
-            <button mat-flat-button [disabled]="!auth.canCreateProject()" (click)="onEditProject()">
+            <button mat-flat-button color="primary" [disabled]="!auth.canCreateProject()" (click)="onEditProject()">
               <mat-icon>edit</mat-icon> {{ 'Settings.edit' | translate }}
             </button>
           </div>
         </div>
 
-        <mat-card class="info-card">
-          <mat-card-content>
+        <div class="info-card card-surface">
             <table class="info-table">
               <tr>
                 <td class="label">{{ 'Settings.name' | translate }}</td>
@@ -80,8 +78,7 @@ import { User } from '../../../../core/models/user.model';
                 <td>{{ project.isPublic ? ('Settings.public' | translate) : ('Settings.private' | translate) }}</td>
               </tr>
             </table>
-          </mat-card-content>
-        </mat-card>
+        </div>
 
         <div class="section-header">
           <h3 class="section-title">{{ 'Settings.tags' | translate }}</h3>
@@ -105,7 +102,7 @@ import { User } from '../../../../core/models/user.model';
               <mat-label>{{ 'Settings.new_tag' | translate }}</mat-label>
               <input matInput [(ngModel)]="newTagName" (keydown.enter)="onAddTag()" maxlength="20" />
             </mat-form-field>
-            <button mat-flat-button [disabled]="newTagName.trim().length < 3" (click)="onAddTag()">
+            <button mat-flat-button color="primary" [disabled]="newTagName.trim().length < 3" (click)="onAddTag()">
               <mat-icon>add</mat-icon> {{ 'Settings.add_tag' | translate }}
             </button>
           </div>
@@ -115,17 +112,18 @@ import { User } from '../../../../core/models/user.model';
   `,
   styles: [`
     .page-container { padding: 16px; }
-    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .page-title { font-size: 1.3rem; font-weight: 600; margin: 0; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .page-title { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
     .header-actions { display: flex; gap: 8px; }
     .danger-btn { color: #d32f2f; border-color: #d32f2f; }
-    .info-card { margin-bottom: 24px; }
+    .info-card { margin-bottom: 24px; padding: 8px 20px; }
     .info-table { width: 100%; border-collapse: collapse; }
-    .info-table tr td { padding: 10px 8px; border-bottom: 1px solid #eee; }
-    .label { font-weight: 600; width: 140px; color: #555; }
+    .info-table tr td { padding: 12px 8px; border-bottom: 1px solid var(--border); }
+    .info-table tr:last-child td { border-bottom: none; }
+    .label { font-weight: 600; width: 140px; color: var(--text-secondary); }
     .owner-cell { display: flex; align-items: center; gap: 8px; }
     .section-header { margin-bottom: 12px; }
-    .section-title { font-size: 1.1rem; font-weight: 600; margin: 0; }
+    .section-title { font-size: 1.1rem; font-weight: 700; margin: 0; }
     .tags-area { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; min-height: 36px; }
     .add-tag-row { display: flex; align-items: center; gap: 12px; }
     .tag-input { max-width: 280px; }

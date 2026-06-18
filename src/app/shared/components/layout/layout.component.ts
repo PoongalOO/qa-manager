@@ -25,7 +25,9 @@ import { LanguageService, SUPPORTED_LANGS } from '../../../core/services/languag
     <mat-sidenav-container class="sidenav-container">
       <mat-sidenav mode="side" opened class="sidenav">
         <div class="brand">
-          <a routerLink="/" class="brand-link">QA Manager</a>
+          <a routerLink="/" class="brand-link">
+            <img src="assets/img/logo-qa-ft.png" alt="QA Manager" class="brand-logo">
+          </a>
         </div>
         <mat-nav-list>
           <a mat-list-item routerLink="/account" routerLinkActive="active-link">
@@ -52,7 +54,7 @@ import { LanguageService, SUPPORTED_LANGS } from '../../../core/services/languag
       </mat-sidenav>
 
       <mat-sidenav-content>
-        <mat-toolbar color="primary" class="toolbar">
+        <mat-toolbar class="toolbar">
           <span class="toolbar-spacer"></span>
           <button mat-icon-button [matMenuTriggerFor]="userMenu">
             <mat-icon>account_circle</mat-icon>
@@ -94,19 +96,39 @@ import { LanguageService, SUPPORTED_LANGS } from '../../../core/services/languag
   `,
   styles: [`
     .sidenav-container { height: 100vh; }
-    .sidenav { width: 220px; background: #1e1e2e; color: #cdd6f4; }
-    .brand { padding: 16px; border-bottom: 1px solid #45475a; }
-    .brand-link { color: #cba6f7; font-size: 18px; font-weight: 700; text-decoration: none; }
-    .toolbar { position: sticky; top: 0; z-index: 100; }
+    .sidenav {
+      width: 232px;
+      background: var(--surface);
+      color: var(--text-primary);
+      border-right: 1px solid var(--border);
+    }
+    .brand { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+    .brand-link { display: block; text-decoration: none; }
+    .brand-logo { height: 56px; display: block; }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
     .toolbar-spacer { flex: 1; }
-    .main-content { padding: 24px; min-height: calc(100vh - 64px); }
-    .active-link { background: rgba(203,166,247,.15) !important; }
+    .main-content { padding: 28px; min-height: calc(100vh - 64px); background: var(--surface-muted); }
+    .active-link {
+      background: var(--brand-green-light) !important;
+      color: var(--brand-green-dark) !important;
+      border-radius: var(--radius-sm);
+    }
+    .active-link mat-icon { color: var(--brand-green-dark) !important; }
     .active-lang { font-weight: 700; }
     .user-info { padding: 8px 16px; display: flex; flex-direction: column; }
-    .user-info small { color: #888; font-size: 12px; }
-    mat-nav-list a { color: #cdd6f4; }
-    mat-nav-list mat-icon { color: #89b4fa; }
-    mat-nav-list .mdc-list-item__primary-text { color: #cdd6f4; }
+    .user-info small { color: var(--text-secondary); font-size: 12px; }
+    mat-nav-list { padding: 8px 12px; }
+    mat-nav-list a { color: var(--text-primary); border-radius: var(--radius-sm); transition: background var(--transition-fast), transform var(--transition-fast); }
+    mat-nav-list a:hover { background: var(--surface-muted); transform: translateX(2px); }
+    mat-nav-list mat-icon { color: var(--text-secondary); }
+    mat-nav-list .mdc-list-item__primary-text { color: var(--text-primary); font-weight: 500; }
   `],
 })
 export class LayoutComponent {

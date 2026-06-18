@@ -41,7 +41,7 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
     ProjectNavComponent, TranslatePipe,
   ],
   template: `
-    <div class="page-container">
+    <div class="page-container anim-page">
       <app-project-nav [projectId]="projectId" />
 
       @if (loading) {
@@ -49,7 +49,7 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
       } @else {
         <div class="folders-layout">
           <!-- Folder tree pane -->
-          <div class="folders-pane mat-elevation-z1">
+          <div class="folders-pane card-surface">
             <div class="pane-header">
               <span class="pane-title">{{ 'Folders.folders' | translate }}</span>
               @if (canEdit) {
@@ -169,7 +169,7 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
             } @else if (!selectedFolderId) {
               <div class="empty-state">{{ 'Folders.select_folder' | translate }}</div>
             } @else {
-              <table mat-table [dataSource]="casesDataSource" class="cases-table mat-elevation-z1">
+              <table mat-table [dataSource]="casesDataSource" class="cases-table card-surface">
                 <ng-container matColumnDef="select">
                   <th mat-header-cell *matHeaderCellDef>
                     <mat-checkbox (change)="toggleSelectAll($event.checked)"
@@ -260,15 +260,16 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
   styles: [`
     .page-container { padding: 16px; }
     .folders-layout { display: flex; gap: 16px; margin-top: 16px; height: calc(100vh - 160px); }
-    .folders-pane { width: 260px; min-width: 200px; border-radius: 8px; overflow-y: auto; background: #fff; }
-    .pane-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 8px 4px 12px; border-bottom: 1px solid #e0e0e0; }
+    .folders-pane { width: 260px; min-width: 200px; overflow-y: auto; }
+    .pane-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 8px 8px 14px; border-bottom: 1px solid var(--border); }
     .pane-title { font-weight: 600; font-size: 14px; }
-    .empty-tree { padding: 16px; color: #888; font-size: 13px; }
+    .empty-tree { padding: 16px; color: var(--text-secondary); font-size: 13px; }
     .folder-tree { padding: 4px 0; }
-    .folder-node { display: flex; align-items: center; padding: 2px 4px; cursor: pointer; border-radius: 6px; margin: 1px 4px; transition: background 0.15s; }
-    .folder-node:hover { background: rgba(0,0,0,0.04); }
-    .folder-node.selected { background: rgba(103, 80, 164, 0.15); }
-    .folder-icon { font-size: 18px; width: 18px; height: 18px; margin-right: 6px; color: #6750a4; }
+    .folder-node { display: flex; align-items: center; padding: 4px 6px; cursor: pointer; border-radius: var(--radius-sm); margin: 1px 6px; transition: background var(--transition-fast); }
+    .folder-node:hover { background: var(--surface-muted); }
+    .folder-node.selected { background: var(--brand-green-light); }
+    .folder-icon { font-size: 18px; width: 18px; height: 18px; margin-right: 6px; color: var(--brand-navy); }
+    .folder-node.selected .folder-icon { color: var(--brand-green-dark); }
     .folder-name { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .expand-btn { width: 28px; height: 28px; flex-shrink: 0; }
     .menu-btn { width: 28px; height: 28px; opacity: 0; flex-shrink: 0; }
@@ -278,18 +279,19 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
     li { list-style: none; }
     mat-tree-node, mat-nested-tree-node { display: block; }
 
-    .cases-pane { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+    .cases-pane { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 14px; }
     .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
     .search-field { flex: 1; min-width: 200px; }
     .filter-select { width: 140px; }
     .action-bar { display: flex; gap: 8px; }
     .cases-table { width: 100%; }
-    .empty-state { text-align: center; padding: 32px; color: #888; }
+    .cases-table tr.mat-mdc-row:hover { background: var(--surface-muted); }
+    .empty-state { text-align: center; padding: 32px; color: var(--text-secondary); }
     .spinner-center { display: flex; justify-content: center; padding: 32px; }
-    .case-link { color: #6750a4; text-decoration: none; }
-    .case-link:hover { text-decoration: underline; }
-    .priority-badge { padding: 2px 8px; border-radius: 12px; color: white; font-size: 11px; font-weight: 600; }
-    .tag-chip { background: #e8def8; color: #21005d; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-right: 4px; }
+    .case-link { color: var(--text-primary); font-weight: 500; text-decoration: none; transition: color var(--transition-fast); }
+    .case-link:hover { color: var(--brand-green-dark); }
+    .priority-badge { padding: 2px 10px; border-radius: 12px; color: white; font-size: 11px; font-weight: 600; }
+    .tag-chip { background: var(--brand-green-light); color: var(--brand-green-dark); padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-right: 4px; }
     mat-form-field { font-size: 13px; }
   `],
 })

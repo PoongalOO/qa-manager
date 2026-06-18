@@ -35,7 +35,7 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
     ProjectNavComponent,
   ],
   template: `
-    <div class="page-container">
+    <div class="page-container anim-page">
       <app-project-nav [projectId]="projectId" />
 
       @if (loading) {
@@ -236,27 +236,27 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
     .page-container { padding: 16px; }
     .case-content { width: 100%; }
     .breadcrumb { margin-bottom: 12px; }
-    .back-link { display: flex; align-items: center; gap: 4px; color: #6750a4; text-decoration: none; font-size: 14px; }
-    .back-link:hover { text-decoration: underline; }
+    .back-link { display: flex; align-items: center; gap: 4px; color: var(--text-secondary); text-decoration: none; font-size: 14px; transition: color var(--transition-fast); }
+    .back-link:hover { color: var(--brand-green-dark); }
     .back-link mat-icon { font-size: 18px; width: 18px; height: 18px; }
-    .case-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .case-id { margin: 0; font-size: 20px; font-weight: 600; }
-    .section-card { margin-bottom: 16px; }
+    .case-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .case-id { margin: 0; font-size: 1.3rem; font-weight: 700; letter-spacing: -0.01em; }
+    .section-card { margin-bottom: 16px; border-radius: var(--radius-md) !important; box-shadow: var(--shadow-sm) !important; }
     .full-width { width: 100%; }
     .fields-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
     .fields-row mat-form-field { flex: 1; min-width: 160px; }
     .step-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
-    .step-number { width: 28px; height: 28px; border-radius: 50%; background: #6750a4; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 16px; }
+    .step-number { width: 28px; height: 28px; border-radius: 50%; background: var(--brand-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 16px; }
     .step-field { flex: 1; }
     .step-actions { display: flex; flex-direction: column; margin-top: 8px; }
     .add-step-btn { margin-top: 8px; }
     .tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
-    .empty-text { color: #888; font-size: 13px; }
+    .empty-text { color: var(--text-secondary); font-size: 13px; }
     .warn-text { color: #ca6702; font-size: 12px; margin-top: 4px; }
-    .attachment-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #f0f0f0; }
+    .attachment-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--border); }
     .att-title { flex: 1; font-size: 13px; }
-    .upload-zone { border: 2px dashed #ccc; border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; margin-top: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #888; transition: border-color 0.2s; }
-    .upload-zone:hover { border-color: #6750a4; color: #6750a4; }
+    .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius-sm); padding: 24px; text-align: center; cursor: pointer; margin-top: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--text-secondary); transition: border-color var(--transition-fast), color var(--transition-fast); }
+    .upload-zone:hover { border-color: var(--brand-green); color: var(--brand-green-dark); }
   `],
 })
 export class CaseDetailComponent implements OnInit, CanDeactivateComponent {

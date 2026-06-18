@@ -23,10 +23,10 @@ import { SIGNUP_ENABLED } from '../../../core/config/feature-flags';
   ],
   template: `
     <div class="auth-container">
-      <mat-card class="auth-card">
+      <mat-card class="auth-card anim-page">
+        <img src="assets/img/logo-qa-ft.png" alt="QA Manager" class="auth-logo">
         <mat-card-header>
-          <mat-card-title>QA Manager</mat-card-title>
-          <mat-card-subtitle>{{ 'Auth.signin_subtitle' | translate }}</mat-card-subtitle>
+          <mat-card-subtitle class="auth-subtitle">{{ 'Auth.signin_subtitle' | translate }}</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
@@ -66,8 +66,23 @@ import { SIGNUP_ENABLED } from '../../../core/config/feature-flags';
     </div>
   `,
   styles: [`
-    .auth-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
-    .auth-card { width: 100%; max-width: 400px; }
+    .auth-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--surface-muted) 0%, #ffffff 60%, var(--brand-green-light) 100%);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px 8px 4px;
+      border-radius: var(--radius-lg) !important;
+      box-shadow: var(--shadow-lg) !important;
+    }
+    .auth-logo { display: block; height: 64px; margin: 12px auto 0; }
+    .auth-subtitle { text-align: center; }
     .full-width { width: 100%; margin-bottom: 12px; }
     .auth-link { font-size: 14px; padding: 8px 16px; }
   `],

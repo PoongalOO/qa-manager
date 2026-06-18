@@ -32,7 +32,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
     UserAvatarComponent, TranslatePipe,
   ],
   template: `
-    <div class="settings-container">
+    <div class="settings-container anim-page">
       <h1 class="settings-title">{{ 'Auth.profile_settings' | translate }}</h1>
 
       <!-- Username -->
@@ -53,7 +53,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
           </form>
         </mat-card-content>
         <mat-card-actions class="card-actions">
-          <button mat-flat-button [disabled]="usernameForm.invalid || updatingUsername" (click)="onUpdateUsername()">
+          <button mat-flat-button color="primary" [disabled]="usernameForm.invalid || updatingUsername" (click)="onUpdateUsername()">
             {{ 'Auth.update_username' | translate }}
           </button>
         </mat-card-actions>
@@ -87,7 +87,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
           </form>
         </mat-card-content>
         <mat-card-actions class="card-actions">
-          <button mat-flat-button [disabled]="passwordForm.invalid || updatingPassword" (click)="onUpdatePassword()">
+          <button mat-flat-button color="primary" [disabled]="passwordForm.invalid || updatingPassword" (click)="onUpdatePassword()">
             {{ 'Auth.update_password' | translate }}
           </button>
         </mat-card-actions>
@@ -111,7 +111,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
           </form>
         </mat-card-content>
         <mat-card-actions class="card-actions">
-          <button mat-flat-button
+          <button mat-flat-button color="primary"
             [disabled]="localeForm.get('locale')?.value === currentUser()?.locale || updatingLocale"
             (click)="onUpdateLocale()">
             {{ 'Auth.update_locale' | translate }}
@@ -141,7 +141,7 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
               {{ 'Auth.remove_avatar' | translate }}
             </button>
           }
-          <button mat-flat-button [disabled]="uploadingAvatar" (click)="fileInput.click()">
+          <button mat-flat-button color="primary" [disabled]="uploadingAvatar" (click)="fileInput.click()">
             {{ 'Auth.upload_avatar' | translate }}
           </button>
         </mat-card-actions>
@@ -150,12 +150,12 @@ function passwordMatchValidator(group: AbstractControl): ValidationErrors | null
   `,
   styles: [`
     .settings-container { padding: 24px 16px; }
-    .settings-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; }
-    .settings-card { margin-bottom: 24px; }
+    .settings-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; letter-spacing: -0.01em; }
+    .settings-card { margin-bottom: 24px; border-radius: var(--radius-md) !important; box-shadow: var(--shadow-sm) !important; }
     .full-width { width: 100%; }
     .card-actions { display: flex; justify-content: flex-end; padding: 8px 16px 16px; gap: 8px; }
     .avatar-section { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
-    .avatar-hint { color: #888; font-size: 0.85rem; margin: 0; }
+    .avatar-hint { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
     .hidden-input { display: none; }
     .danger-btn { color: #d32f2f; border-color: #d32f2f; }
   `],

@@ -24,7 +24,7 @@ import { RunDialogComponent, RunDialogResult } from '../../../shared/components/
     MatProgressSpinnerModule, MatSortModule, ProjectNavComponent, TranslatePipe,
   ],
   template: `
-    <div class="page-container">
+    <div class="page-container anim-page">
       <app-project-nav [projectId]="projectId" />
 
       <div class="page-header">
@@ -40,7 +40,7 @@ import { RunDialogComponent, RunDialogResult } from '../../../shared/components/
       @if (loading) {
         <mat-spinner diameter="40" />
       } @else {
-        <table mat-table [dataSource]="dataSource" matSort class="runs-table mat-elevation-z1">
+        <table mat-table [dataSource]="dataSource" matSort class="runs-table card-surface">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'Runs.id' | translate }}</th>
             <td mat-cell *matCellDef="let row">{{ row.id }}</td>
@@ -98,12 +98,13 @@ import { RunDialogComponent, RunDialogResult } from '../../../shared/components/
   `,
   styles: [`
     .page-container { padding: 16px; }
-    .page-header { display: flex; justify-content: space-between; align-items: center; margin: 16px 0; }
-    .page-title { margin: 0; font-size: 20px; font-weight: 600; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+    .page-title { margin: 0; font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; }
     .runs-table { width: 100%; }
-    .run-link { color: #6750a4; text-decoration: none; }
-    .run-link:hover { text-decoration: underline; }
-    .state-badge { padding: 2px 10px; border-radius: 12px; background: #e8def8; color: #21005d; font-size: 12px; }
+    .runs-table tr.mat-mdc-row:hover { background: var(--surface-muted); }
+    .run-link { color: var(--text-primary); font-weight: 600; text-decoration: none; transition: color var(--transition-fast); }
+    .run-link:hover { color: var(--brand-green-dark); }
+    .state-badge { padding: 2px 10px; border-radius: 12px; background: var(--brand-green-light); color: var(--brand-green-dark); font-size: 12px; font-weight: 600; }
   `],
 })
 export class RunsListComponent implements OnInit {

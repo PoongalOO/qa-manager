@@ -1,10 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
@@ -18,31 +16,29 @@ import { Run } from '../../core/models/run.model';
   selector: 'app-account',
   standalone: true,
   imports: [
-    RouterLink, MatCardModule, MatButtonModule, MatIconModule,
-    MatChipsModule, MatProgressSpinnerModule, UserAvatarComponent,
+    RouterLink, MatButtonModule, MatIconModule,
+    MatProgressSpinnerModule, UserAvatarComponent,
     TranslatePipe,
   ],
   template: `
-    <div class="account-container">
-      <mat-card class="profile-card">
-        <mat-card-content>
-          <div class="profile-row">
-            <app-user-avatar
-              [username]="currentUser()?.username"
-              [avatarPath]="currentUser()?.avatarPath"
-              [size]="48"
-            />
-            <div class="user-details">
-              <strong class="username">{{ currentUser()?.username }}</strong>
-              <span class="email">{{ currentUser()?.email }}</span>
-            </div>
-            <a mat-stroked-button routerLink="/account/settings">
-              <mat-icon>settings</mat-icon>
-              {{ 'Auth.profile_settings' | translate }}
-            </a>
+    <div class="account-container anim-page">
+      <div class="profile-card card-surface">
+        <div class="profile-row">
+          <app-user-avatar
+            [username]="currentUser()?.username"
+            [avatarPath]="currentUser()?.avatarPath"
+            [size]="48"
+          />
+          <div class="user-details">
+            <strong class="username">{{ currentUser()?.username }}</strong>
+            <span class="email">{{ currentUser()?.email }}</span>
           </div>
-        </mat-card-content>
-      </mat-card>
+          <a mat-stroked-button routerLink="/account/settings">
+            <mat-icon>settings</mat-icon>
+            {{ 'Auth.profile_settings' | translate }}
+          </a>
+        </div>
+      </div>
 
       <h3 class="section-title">{{ 'Auth.your_projects' | translate }}</h3>
 
@@ -55,18 +51,18 @@ import { Run } from '../../core/models/run.model';
           <mat-icon>arrow_forward</mat-icon>
         </a>
       } @else {
-        @for (p of projects; track p.id) {
-          <mat-card class="item-card">
-            <mat-card-header>
-              <mat-card-title>
-                <a [routerLink]="['/projects', p.id, 'home']" class="item-link">{{ p.name }}</a>
-              </mat-card-title>
-              <mat-card-subtitle>{{ p.detail }}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <mat-chip>{{ p.isPublic ? ('Auth.public' | translate) : ('Auth.private' | translate) }}</mat-chip>
-            </mat-card-content>
-          </mat-card>
+        @for (p of projects; track p.id; let i = $index) {
+          <div class="item-card card-surface anim-stagger" [style.animation-delay.ms]="i * 50">
+            <div class="item-header">
+              <a [routerLink]="['/projects', p.id, 'home']" class="item-link">{{ p.name }}</a>
+              <span class="item-subtitle">{{ p.detail }}</span>
+            </div>
+            <div class="item-body">
+              <span class="chip" [class.chip-public]="p.isPublic" [class.chip-private]="!p.isPublic">
+                {{ p.isPublic ? ('Auth.public' | translate) : ('Auth.private' | translate) }}
+              </span>
+            </div>
+          </div>
         }
       }
 
@@ -75,45 +71,45 @@ import { Run } from '../../core/models/run.model';
       @if (!loading && runs.length === 0) {
         <span class="empty-text">{{ 'Auth.no_test_campaigns' | translate }}</span>
       }
-      @for (run of runs; track run.id) {
-        <mat-card class="item-card">
-          <mat-card-header>
-            <mat-card-title>
-              <a [routerLink]="['/projects', run.projectId, 'runs', run.id]" class="item-link">
-                {{ run.name }}
-                @if (run.caseCount !== undefined) {
-                  <span class="count">({{ run.caseCount }})</span>
-                }
-              </a>
-            </mat-card-title>
+      @for (run of runs; track run.id; let i = $index) {
+        <div class="item-card card-surface anim-stagger" [style.animation-delay.ms]="i * 50">
+          <div class="item-header">
+            <a [routerLink]="['/projects', run.projectId, 'runs', run.id]" class="item-link">
+              {{ run.name }}
+              @if (run.caseCount !== undefined) {
+                <span class="count">({{ run.caseCount }})</span>
+              }
+            </a>
             @if (run.Project?.name) {
-              <mat-card-subtitle>{{ run.Project?.name }}</mat-card-subtitle>
+              <span class="item-subtitle">{{ run.Project?.name }}</span>
             }
-          </mat-card-header>
+          </div>
           @if (run.description) {
-            <mat-card-content>
-              <p class="run-desc">{{ run.description }}</p>
-            </mat-card-content>
+            <p class="run-desc">{{ run.description }}</p>
           }
-        </mat-card>
+        </div>
       }
     </div>
   `,
   styles: [`
     .account-container { padding: 24px 16px; }
-    .profile-card { margin-bottom: 24px; }
+    .profile-card { margin-bottom: 24px; padding: 20px; }
     .profile-row { display: flex; align-items: center; gap: 16px; }
     .user-details { display: flex; flex-direction: column; flex: 1; }
     .username { font-size: 1.1rem; }
-    .email { color: #666; font-size: 0.9rem; }
-    .section-title { font-weight: 600; font-size: 1.05rem; margin: 0 0 12px; }
+    .email { color: var(--text-secondary); font-size: 0.9rem; }
+    .section-title { font-weight: 700; font-size: 1.1rem; margin: 0 0 12px; letter-spacing: -0.01em; }
     .mt-section { margin-top: 32px; }
-    .item-card { margin-bottom: 8px; }
-    .item-link { color: inherit; text-decoration: none; font-weight: 500; }
-    .item-link:hover { text-decoration: underline; }
-    .count { color: #999; font-weight: normal; margin-left: 4px; font-size: 0.9rem; }
-    .empty-text { color: #888; }
-    .run-desc { font-size: 0.85rem; color: #666; margin: 0; }
+    .item-card { margin-bottom: 10px; padding: 16px 20px; }
+    .item-header { display: flex; flex-direction: column; gap: 2px; }
+    .item-subtitle { color: var(--text-secondary); font-size: 0.85rem; }
+    .item-body { margin-top: 8px; }
+    .item-link { color: var(--text-primary); text-decoration: none; font-weight: 600; transition: color var(--transition-fast); }
+    .item-link:hover { color: var(--brand-green-dark); }
+    .count { color: var(--text-secondary); font-weight: normal; margin-left: 4px; font-size: 0.9rem; }
+    .empty-text { color: var(--text-secondary); }
+    .run-desc { font-size: 0.85rem; color: var(--text-secondary); margin: 8px 0 0; }
+    .chip { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
   `],
 })
 export class AccountComponent implements OnInit {

@@ -21,7 +21,7 @@ interface SvgSegment extends ChartSegment {
       }
       <svg width="140" height="140" viewBox="0 0 140 140">
         <g transform="rotate(-90 70 70)">
-          <circle cx="70" cy="70" r="55" fill="none" stroke="#e8e8e8" stroke-width="30" />
+          <circle cx="70" cy="70" r="55" fill="none" stroke="var(--surface-muted)" stroke-width="30" />
           @for (seg of svgSegments; track seg.label) {
             <circle cx="70" cy="70" r="55" fill="none"
               [attr.stroke]="seg.color"
@@ -31,7 +31,7 @@ interface SvgSegment extends ChartSegment {
           }
         </g>
         <text x="70" y="70" text-anchor="middle" dominant-baseline="middle"
-              font-size="20" font-weight="600" fill="#333">{{ total }}</text>
+              font-size="20" font-weight="700" fill="var(--text-primary)">{{ total }}</text>
       </svg>
       <div class="legend">
         @for (seg of segments; track seg.label) {

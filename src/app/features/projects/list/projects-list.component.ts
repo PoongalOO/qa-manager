@@ -23,11 +23,11 @@ import { Project } from '../../../core/models/project.model';
     TranslatePipe,
   ],
   template: `
-    <div class="page-container">
+    <div class="page-container anim-page">
       <div class="page-header">
         <h2 class="page-title">{{ 'Projects.project_list' | translate }}</h2>
         @if (auth.canCreateProject()) {
-          <button mat-flat-button (click)="openCreateDialog()">
+          <button mat-flat-button color="primary" (click)="openCreateDialog()">
             <mat-icon>add</mat-icon> {{ 'Projects.new_project' | translate }}
           </button>
         }
@@ -36,7 +36,7 @@ import { Project } from '../../../core/models/project.model';
       @if (loading) {
         <mat-spinner diameter="40" />
       } @else {
-        <table mat-table [dataSource]="dataSource" matSort class="projects-table">
+        <table mat-table [dataSource]="dataSource" matSort class="projects-table card-surface">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'Projects.id' | translate }}</th>
             <td mat-cell *matCellDef="let p">{{ p.id }}</td>
@@ -79,15 +79,16 @@ import { Project } from '../../../core/models/project.model';
   `,
   styles: [`
     .page-container { padding: 16px; }
-    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .page-title { font-size: 1.3rem; font-weight: 600; margin: 0; }
-    .projects-table { width: 100%; }
-    .project-link { color: inherit; text-decoration: none; font-weight: 500; }
-    .project-link:hover { text-decoration: underline; }
-    .project-detail { font-size: 0.8rem; color: #666; }
-    .chip-public { background: #e8f5e9 !important; color: #2e7d32 !important; }
-    .chip-private { background: #f5f5f5 !important; color: #616161 !important; }
-    .no-data { text-align: center; padding: 24px; color: #888; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .page-title { font-size: 1.4rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
+    .projects-table { width: 100%; overflow: hidden; }
+    .projects-table tr.mat-mdc-row:hover { background: var(--surface-muted); }
+    .project-link { color: var(--text-primary); text-decoration: none; font-weight: 600; transition: color var(--transition-fast); }
+    .project-link:hover { color: var(--brand-green-dark); }
+    .project-detail { font-size: 0.8rem; color: var(--text-secondary); }
+    .chip-public { background: var(--brand-green-light) !important; color: var(--brand-green-dark) !important; }
+    .chip-private { background: var(--surface-muted) !important; color: var(--text-secondary) !important; }
+    .no-data { text-align: center; padding: 24px; color: var(--text-secondary); }
   `],
 })
 export class ProjectsListComponent implements OnInit {
