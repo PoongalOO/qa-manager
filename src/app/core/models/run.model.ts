@@ -43,7 +43,7 @@ export interface CaseWithRunCase {
   type: number;
   state: number;
   folderId: number;
-  Tags?: { id: number; name: string }[];
+  tags?: { id: number; name: string }[];
   RunCases: RunCase[];
 }
 

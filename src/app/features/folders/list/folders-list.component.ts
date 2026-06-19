@@ -17,12 +17,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
-import { forkJoin } from 'rxjs';
+import { forkJoin, switchMap } from 'rxjs';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FolderService } from '../../../core/services/folder.service';
 import { CaseService } from '../../../core/services/case.service';
 import { TagService } from '../../../core/services/tag.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ProjectService } from '../../../core/services/project.service';
+import { CaseExportService, ExportFormat } from '../../../core/services/case-export.service';
 import { FolderNode, buildFolderTree, Folder } from '../../../core/models/folder.model';
 import { CaseListItem, PRIORITIES, TEST_TYPES, PRIORITY_COLORS } from '../../../core/models/case.model';
 import { Tag } from '../../../core/models/project.model';
@@ -162,6 +164,15 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
                   Supprimer ({{ selectedCaseIds.size }})
                 </button>
               }
+              <button mat-stroked-button [matMenuTriggerFor]="exportMenu" [disabled]="exporting"
+                      matTooltip="Télécharger tous les cas de test du projet">
+                @if (exporting) {
+                  <mat-spinner diameter="16" class="export-spinner" />
+                } @else {
+                  <mat-icon>download</mat-icon>
+                }
+                Télécharger tous les cas
+              </button>
             </div>
 
             @if (loadingCases) {
@@ -218,7 +229,7 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
                 <ng-container matColumnDef="tags">
                   <th mat-header-cell *matHeaderCellDef>Tags</th>
                   <td mat-cell *matCellDef="let row">
-                    @for (tag of row.Tags; track tag.id) {
+                    @for (tag of row.tags; track tag.id) {
                       <span class="tag-chip">{{ tag.name }}</span>
                     }
                   </td>
@@ -256,6 +267,25 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
         </button>
       </ng-template>
     </mat-menu>
+
+    <!-- Export format menu -->
+    <mat-menu #exportMenu="matMenu">
+      <button mat-menu-item (click)="exportAllCases('pdf')">
+        <mat-icon>picture_as_pdf</mat-icon> PDF
+      </button>
+      <button mat-menu-item (click)="exportAllCases('xlsx')">
+        <mat-icon>table_chart</mat-icon> Excel
+      </button>
+      <button mat-menu-item (click)="exportAllCases('json')">
+        <mat-icon>data_object</mat-icon> JSON
+      </button>
+      <button mat-menu-item (click)="exportAllCases('txt')">
+        <mat-icon>description</mat-icon> Texte
+      </button>
+      <button mat-menu-item (click)="exportAllCases('md')">
+        <mat-icon>article</mat-icon> Markdown
+      </button>
+    </mat-menu>
   `,
   styles: [`
     .page-container { padding: 16px; }
@@ -283,7 +313,8 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
     .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-start; }
     .search-field { flex: 1; min-width: 200px; }
     .filter-select { width: 140px; }
-    .action-bar { display: flex; gap: 8px; }
+    .action-bar { display: flex; gap: 8px; align-items: center; }
+    .export-spinner { display: inline-block; margin-right: 8px; vertical-align: middle; }
     .cases-table { width: 100%; }
     .cases-table tr.mat-mdc-row:hover { background: var(--surface-muted); }
     .empty-state { text-align: center; padding: 32px; color: var(--text-secondary); }
@@ -306,9 +337,12 @@ export class FoldersListComponent implements OnInit, OnChanges {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private projectSvc = inject(ProjectService);
+  private exportSvc = inject(CaseExportService);
 
   loading = true;
   loadingCases = false;
+  exporting = false;
   folders: Folder[] = [];
   projectTags: Tag[] = [];
   cases: CaseListItem[] = [];
@@ -545,6 +579,31 @@ export class FoldersListComponent implements OnInit, OnChanges {
         },
         error: () => { this.snackBar.open('Erreur lors de la suppression', 'Fermer', { duration: 3000 }); },
       });
+    });
+  }
+
+  exportAllCases(format: ExportFormat): void {
+    if (this.exporting) return;
+    if (this.folders.length === 0) {
+      this.snackBar.open('Aucun cas de test à exporter', 'OK', { duration: 2500 });
+      return;
+    }
+    this.exporting = true;
+    const pid = parseInt(this.projectId, 10);
+    this.projectSvc.getProjectInfo(pid).pipe(
+      switchMap(project => this.exportSvc.exportProjectCases(pid, project.name, this.folders, format)),
+    ).subscribe({
+      next: (count) => {
+        this.exporting = false;
+        this.snackBar.open(
+          count > 0 ? `${count} cas de test exportés` : 'Aucun cas de test à exporter',
+          'OK', { duration: 2500 },
+        );
+      },
+      error: () => {
+        this.exporting = false;
+        this.snackBar.open('Erreur lors de la génération du fichier', 'Fermer', { duration: 3000 });
+      },
     });
   }
 

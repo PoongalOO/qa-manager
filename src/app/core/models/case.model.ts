@@ -28,9 +28,9 @@ export interface Case {
   folderId: number;
   createdAt?: string;
   updatedAt?: string;
-  Steps?: CaseStep[];
-  Attachments?: Attachment[];
-  Tags?: { id: number; name: string }[];
+  steps?: CaseStep[];
+  attachments?: Attachment[];
+  tags?: { id: number; name: string }[];
 }
 
 export interface CaseListItem {
@@ -43,7 +43,30 @@ export interface CaseListItem {
   folderId: number;
   createdAt: string;
   updatedAt: string;
-  Tags?: { id: number; name: string }[];
+  tags?: { id: number; name: string }[];
+}
+
+export interface ExportCaseStep {
+  id: number;
+  step: string | null;
+  result: string | null;
+  stepNo: number;
+}
+
+export interface ExportCase {
+  id: number;
+  title: string;
+  state: number;
+  priority: number;
+  type: number;
+  automationStatus: number;
+  description: string | null;
+  template: number;
+  preConditions: string | null;
+  expectedResults: string | null;
+  folderId: number;
+  tags?: { id: number; name: string }[];
+  steps?: ExportCaseStep[];
 }
 
 export const PRIORITIES = ['Critique', 'Haute', 'Moyenne', 'Basse'];

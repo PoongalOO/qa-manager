@@ -329,9 +329,9 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
 
                     <div class="detail-section">
                       <h4 class="detail-label">Tags</h4>
-                      @if (selectedCaseDetail.Tags && selectedCaseDetail.Tags.length > 0) {
+                      @if (selectedCaseDetail.tags && selectedCaseDetail.tags.length > 0) {
                         <div class="tags-row">
-                          @for (tag of selectedCaseDetail.Tags; track tag.id) {
+                          @for (tag of selectedCaseDetail.tags; track tag.id) {
                             <span class="tag-chip">{{ tag.name }}</span>
                           }
                         </div>
@@ -623,7 +623,7 @@ export class RunEditorComponent implements OnInit, CanDeactivateComponent {
   get totalIncluded(): number { return this.allCases.filter(c => this.isIncluded(c)).length; }
 
   get sortedDetailSteps() {
-    return (this.selectedCaseDetail?.Steps ?? [])
+    return (this.selectedCaseDetail?.steps ?? [])
       .sort((a, b) => a.caseSteps.stepNo - b.caseSteps.stepNo);
   }
 

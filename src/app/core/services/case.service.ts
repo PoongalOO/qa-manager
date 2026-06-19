@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Case, CaseListItem, CaseStep, Attachment } from '../models/case.model';
+import { Case, CaseListItem, CaseStep, Attachment, ExportCase } from '../models/case.model';
 
 export interface CaseFilters {
   search?: string;
@@ -27,6 +27,16 @@ export class CaseService {
 
   getCase(caseId: number): Observable<Case> {
     return this.http.get<Case>(`${this.api}/cases/${caseId}`);
+  }
+
+  getCasesByProject(projectId: number): Observable<CaseListItem[]> {
+    return this.http.get<CaseListItem[]>(`${this.api}/cases/indexByProjectId`, {
+      params: { projectId: String(projectId) },
+    });
+  }
+
+  downloadCasesData(caseIds: number[]): Observable<ExportCase[]> {
+    return this.http.post<ExportCase[]>(`${this.api}/cases/download`, { caseIds });
   }
 
   createCase(folderId: number, data: { title: string; description?: string }): Observable<Case> {

@@ -22,9 +22,9 @@ const mockCase: Case = {
   id: 1, title: 'Login test', state: 0, priority: 2, type: 4,
   automationStatus: 0, description: 'Test login', template: 1,
   preConditions: null, expectedResults: null, folderId: 1,
-  Steps: [mockStep],
-  Tags: [{ id: 2, name: 'regression' }],
-  Attachments: [],
+  steps: [mockStep],
+  tags: [{ id: 2, name: 'regression' }],
+  attachments: [],
 };
 
 const mockTag: Tag = { id: 2, name: 'regression', projectId: 1 };

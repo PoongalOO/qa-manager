@@ -319,9 +319,9 @@ export class CaseDetailComponent implements OnInit, CanDeactivateComponent {
       next: ([tc, tags]) => {
         this.testCase = tc;
         this.projectTags = tags;
-        this.steps = (tc.Steps ?? []).map(s => ({ ...s, editState: 'notChanged' as const }));
-        this.selectedTagIds = (tc.Tags ?? []).map(t => t.id);
-        this.attachments = tc.Attachments ?? [];
+        this.steps = (tc.steps ?? []).map(s => ({ ...s, editState: 'notChanged' as const }));
+        this.selectedTagIds = (tc.tags ?? []).map(t => t.id);
+        this.attachments = tc.attachments ?? [];
         this.form.patchValue({
           title: tc.title,
           state: tc.state,
