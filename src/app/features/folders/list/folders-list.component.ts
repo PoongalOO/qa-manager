@@ -25,6 +25,7 @@ import { TagService } from '../../../core/services/tag.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ProjectService } from '../../../core/services/project.service';
 import { CaseExportService, ExportFormat } from '../../../core/services/case-export.service';
+import { CaseImportService } from '../../../core/services/case-import.service';
 import { FolderNode, buildFolderTree, Folder } from '../../../core/models/folder.model';
 import { CaseListItem, PRIORITIES, TEST_TYPES, PRIORITY_COLORS } from '../../../core/models/case.model';
 import { Tag } from '../../../core/models/project.model';
@@ -163,6 +164,19 @@ import { FolderDialogComponent, FolderDialogResult } from '../../../shared/compo
                   <mat-icon>delete</mat-icon>
                   Supprimer ({{ selectedCaseIds.size }})
                 </button>
+              }
+              @if (canEdit && selectedFolderId) {
+                <button mat-stroked-button [disabled]="importing" (click)="fileInput.click()"
+                        [matTooltip]="'Folders.import_tooltip' | translate">
+                  @if (importing) {
+                    <mat-spinner diameter="16" class="export-spinner" />
+                  } @else {
+                    <mat-icon>upload</mat-icon>
+                  }
+                  {{ 'Folders.import_cases' | translate }}
+                </button>
+                <input #fileInput type="file" hidden accept=".xlsx,.csv,.json"
+                       (change)="onImportFileSelected($event)" />
               }
               <button mat-stroked-button [matMenuTriggerFor]="exportMenu" [disabled]="exporting"
                       matTooltip="Télécharger tous les cas de test du projet">
@@ -339,10 +353,12 @@ export class FoldersListComponent implements OnInit, OnChanges {
   private dialog = inject(MatDialog);
   private projectSvc = inject(ProjectService);
   private exportSvc = inject(CaseExportService);
+  private importSvc = inject(CaseImportService);
 
   loading = true;
   loadingCases = false;
   exporting = false;
+  importing = false;
   folders: Folder[] = [];
   projectTags: Tag[] = [];
   cases: CaseListItem[] = [];
@@ -579,6 +595,27 @@ export class FoldersListComponent implements OnInit, OnChanges {
         },
         error: () => { this.snackBar.open('Erreur lors de la suppression', 'Fermer', { duration: 3000 }); },
       });
+    });
+  }
+
+  onImportFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || !this.selectedFolderId) return;
+
+    const pid = parseInt(this.projectId, 10);
+    this.importing = true;
+    this.importSvc.importFile(file, pid, this.selectedFolderId, this.folders).then(result => {
+      this.importing = false;
+      const parts = [`${result.casesCreated} cas importés`];
+      if (result.foldersCreated > 0) parts.push(`${result.foldersCreated} dossier(s) créé(s)`);
+      if (result.skipped > 0) parts.push(`${result.skipped} ligne(s) ignorée(s) (titre manquant)`);
+      this.snackBar.open(parts.join(', '), 'OK', { duration: 3500 });
+      this.loadFolders();
+    }).catch(() => {
+      this.importing = false;
+      this.snackBar.open("Erreur lors de l'import du fichier", 'Fermer', { duration: 3000 });
     });
   }
 

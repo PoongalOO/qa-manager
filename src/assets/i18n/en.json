@@ -151,7 +151,9 @@
     "actions": "Actions",
     "no_cases_found": "No test cases found",
     "new_test_case": "New",
-    "select_folder": "Select a folder"
+    "select_folder": "Select a folder",
+    "import_cases": "Import",
+    "import_tooltip": "Import test cases from an xlsx, csv or json file (optional 'folder' column to create folders)"
   },
   "Cases": {
     "back_to_cases": "Back to test cases",

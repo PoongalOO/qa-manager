@@ -39,7 +39,7 @@ export class CaseService {
     return this.http.post<ExportCase[]>(`${this.api}/cases/download`, { caseIds });
   }
 
-  createCase(folderId: number, data: { title: string; description?: string }): Observable<Case> {
+  createCase(folderId: number, data: Partial<Case> & { title: string }): Observable<Case> {
     return this.http.post<Case>(`${this.api}/cases`, data, { params: { folderId: String(folderId) } });
   }
 
