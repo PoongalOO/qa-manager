@@ -645,7 +645,7 @@ export class RunEditorComponent implements OnInit, CanDeactivateComponent {
     forkJoin([
       this.runSvc.getRun(rid),
       this.folderSvc.getFolders(pid),
-      this.runSvc.getProjectCases(pid, rid),
+      this.runSvc.getProjectCases(pid, rid, {}, this.currentUserId ?? undefined),
     ]).subscribe({
       next: ([{ run }, folders, cases]) => {
         this.run = run;
@@ -945,7 +945,7 @@ export class RunEditorComponent implements OnInit, CanDeactivateComponent {
         if (this.canManage) {
           this.run = res['run'] as Run;
           const pid = parseInt(this.projectId, 10);
-          this.runSvc.getProjectCases(pid, rid).subscribe(fresh => {
+          this.runSvc.getProjectCases(pid, rid, {}, this.effectiveViewUserId ?? undefined).subscribe(fresh => {
             this.allCases = fresh.map(c => ({
               ...c,
               RunCases: c.RunCases.map(rc => ({ ...rc, editState: 'notChanged' as const })),
