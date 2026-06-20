@@ -34,6 +34,7 @@ export interface FolderWithCases {
 export interface RunCaseBasic {
   id: number;
   status: number;
+  RunCaseResults?: { userId: number; status: number }[];
 }
 
 export interface RunWithCases {

@@ -1,16 +1,25 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ProjectService } from '../../../../core/services/project.service';
 import { ProjectNavComponent } from '../../../../shared/components/project-nav/project-nav.component';
 import { DonutChartComponent, ChartSegment } from '../../../../shared/components/donut-chart/donut-chart.component';
-import { ProjectWithStats } from '../../../../core/models/project.model';
+import { ProjectWithStats, RunCaseBasic } from '../../../../core/models/project.model';
 import { PRIORITIES, PRIORITY_COLORS, TEST_TYPES } from '../../../../core/models/case.model';
 import { RUN_CASE_STATUSES, RUN_CASE_STATUS_COLORS } from '../../../../core/models/run.model';
 
 const CATEGORICAL_PALETTE = ['#fba91e', '#6ea56c', '#3ac6e1', '#feda2f', '#f15f47', '#244470', '#9c80bb', '#f595a6'];
 const TYPE_COLORS = Array.from({ length: 13 }, (_, i) => CATEGORICAL_PALETTE[i % CATEGORICAL_PALETTE.length]);
+
+// Worst-result-wins, so a case isn't reported as healthy when one tester still flagged it.
+const STATUS_SEVERITY_ORDER = [2, 3, 4, 1, 0]; // Échoué, À retester, Ignoré, Passé, Non testé
+
+function effectiveRunCaseStatus(rc: RunCaseBasic): number {
+  if (!rc.RunCaseResults?.length) return rc.status;
+  const reported = new Set(rc.RunCaseResults.map(r => r.status));
+  return STATUS_SEVERITY_ORDER.find(s => reported.has(s)) ?? rc.status;
+}
 
 @Component({
   selector: 'app-project-home',
@@ -144,7 +153,7 @@ const TYPE_COLORS = Array.from({ length: 13 }, (_, i) => CATEGORICAL_PALETTE[i %
     .pl-dot { width: 8px; height: 8px; border-radius: 50%; }
   `],
 })
-export class ProjectHomeComponent implements OnInit {
+export class ProjectHomeComponent implements OnInit, OnDestroy {
   @Input() projectId!: string;
 
   private readonly projectSvc = inject(ProjectService);
@@ -178,7 +187,7 @@ export class ProjectHomeComponent implements OnInit {
     return (this.project?.Runs ?? []).map(run => {
       const total = run.RunCases.length;
       const counts = [0, 0, 0, 0, 0];
-      run.RunCases.forEach(rc => counts[rc.status]++);
+      run.RunCases.forEach(rc => counts[effectiveRunCaseStatus(rc)]++);
       return {
         name: run.name,
         total,
@@ -191,7 +200,20 @@ export class ProjectHomeComponent implements OnInit {
     });
   }
 
+  private readonly onVisibilityChange = (): void => {
+    if (document.visibilityState === 'visible') this.loadHome();
+  };
+
   ngOnInit(): void {
+    this.loadHome();
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+  }
+
+  ngOnDestroy(): void {
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+  }
+
+  private loadHome(): void {
     this.projectSvc.getProjectHome(Number(this.projectId)).subscribe({
       next: project => { this.project = project; this.loading = false; },
       error: () => { this.loading = false; },
