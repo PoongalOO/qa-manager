@@ -238,7 +238,9 @@
     "no_cases_in_folder": "Aucun cas de test dans ce dossier.",
     "viewing_tester": "Vue",
     "my_results": "Mes résultats",
-    "click_tester_hint": "Cliquez sur un testeur pour consulter ses résultats."
+    "click_tester_hint": "Cliquez sur un testeur pour consulter ses résultats.",
+    "run_locked": "Cette campagne est verrouillée et ne peut plus être modifiée.",
+    "run_not_accessible": "Cette campagne n'est plus accessible."
   },
   "Members": {
     "member_management": "Membres",

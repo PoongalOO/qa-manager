@@ -238,7 +238,9 @@
     "no_cases_in_folder": "No test cases in this folder.",
     "viewing_tester": "Viewing",
     "my_results": "My results",
-    "click_tester_hint": "Click on a tester to view their results."
+    "click_tester_hint": "Click on a tester to view their results.",
+    "run_locked": "This run is locked and can no longer be modified.",
+    "run_not_accessible": "This run is no longer accessible."
   },
   "Members": {
     "member_management": "Members",

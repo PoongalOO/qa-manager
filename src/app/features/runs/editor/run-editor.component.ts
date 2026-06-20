@@ -74,14 +74,21 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
                 <mat-label>Nom de la campagne</mat-label>
                 <input matInput formControlName="name" (input)="markDirty()" [readonly]="!canManage" />
               </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>État</mat-label>
-                <mat-select formControlName="state" (selectionChange)="markDirty()" [disabled]="!canManage">
-                  @for (s of runStates; track s; let i = $index) {
-                    <mat-option [value]="i">{{ s }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
+              @if (canManage) {
+                <mat-form-field appearance="outline">
+                  <mat-label>État</mat-label>
+                  <mat-select formControlName="state" (selectionChange)="markDirty()">
+                    @for (s of runStates; track s; let i = $index) {
+                      <mat-option [value]="i">{{ s }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              } @else {
+                <div class="state-readonly">
+                  <span class="state-readonly-label">État</span>
+                  <span class="state-badge">{{ runStates[run.state] }}</span>
+                </div>
+              }
               <mat-form-field appearance="outline" class="run-desc-field">
                 <mat-label>Description</mat-label>
                 <textarea matInput formControlName="description" rows="2" (input)="markDirty()" [readonly]="!canManage"></textarea>
@@ -263,8 +270,8 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
                     <mat-select [value]="getRunCaseStatus(row)"
                                 (selectionChange)="changeStatus(row, $event.value)"
                                 class="status-select"
-                                [disabled]="isViewingOtherTester"
-                                [matTooltip]="isViewingOtherTester ? (('Run.viewing_tester' | translate) + ' : ' + viewTesterUsername) : ''">
+                                [disabled]="isViewingOtherTester || isRunLocked"
+                                [matTooltip]="isViewingOtherTester ? (('Run.viewing_tester' | translate) + ' : ' + viewTesterUsername) : (isRunLocked ? ('Run.run_locked' | translate) : '')">
                       @for (s of runCaseStatuses; track s; let i = $index) {
                         <mat-option [value]="i">{{ s }}</mat-option>
                       }
@@ -429,6 +436,8 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
             </div>
           }
         </div>
+      } @else {
+        <p class="empty-state">{{ 'Run.run_not_accessible' | translate }}</p>
       }
     </div>
   `,
@@ -442,6 +451,9 @@ import { CanDeactivateComponent } from '../../../core/guards/unsaved-changes.gua
     .run-info-card { margin-bottom: 16px; border-radius: var(--radius-md) !important; box-shadow: var(--shadow-sm) !important; }
     .run-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-start; }
     .run-name-field { flex: 2; min-width: 200px; }
+    .state-readonly { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; }
+    .state-readonly-label { font-size: 12px; color: var(--text-secondary); }
+    .state-badge { align-self: flex-start; padding: 2px 10px; border-radius: 12px; background: var(--brand-green-light); color: var(--brand-green-dark); font-size: 12px; font-weight: 600; }
     .run-desc-field { flex: 3; min-width: 200px; }
     /* status-chips now inside status-chips-row */
     .status-chip { padding: 3px 12px; border-radius: 12px; color: white; font-size: 12px; font-weight: 600; }
@@ -618,6 +630,14 @@ export class RunEditorComponent implements OnInit, CanDeactivateComponent {
   get effectiveViewUserId(): number | null { return this.viewTesterUserId ?? this.currentUserId; }
   get isViewingOtherTester(): boolean {
     return this.viewTesterUserId !== null && this.viewTesterUserId !== this.currentUserId;
+  }
+
+  // Managers always bypass the lock; Finished (4) blocks everyone else, Closed (5) blocks reporters only.
+  get isRunLocked(): boolean {
+    if (this.canManage || !this.run) return false;
+    if (this.run.state === 4) return true;
+    if (this.run.state === 5) return !this.auth.isProjectDeveloper(parseInt(this.projectId, 10));
+    return false;
   }
 
   get totalIncluded(): number { return this.allCases.filter(c => this.isIncluded(c)).length; }
@@ -892,7 +912,7 @@ export class RunEditorComponent implements OnInit, CanDeactivateComponent {
   canDeactivate(): boolean { return !this.isDirty; }
 
   changeStatus(c: CaseWithRunCase, newStatus: number): void {
-    if (!this.isIncluded(c)) return;
+    if (!this.isIncluded(c) || this.isRunLocked) return;
     const userId = this.currentUserId;
     if (userId === null) return;
     this.isDirty = true;
@@ -957,6 +977,12 @@ export class RunEditorComponent implements OnInit, CanDeactivateComponent {
               const first = this.allCases.find(c => this.isIncluded(c));
               if (first) this.selectFolder({ id: first.folderId });
             }
+          });
+        } else {
+          // The run may have auto-transitioned from "Nouveau" to "En cours" server-side.
+          this.runSvc.getRun(rid).subscribe(({ run }) => {
+            this.run = run;
+            this.form.patchValue({ state: run.state });
           });
         }
       },
